@@ -15,3 +15,7 @@ def json_data_loader(fp):
 
 
 d = json_data_loader("jira-conversations2.json")
+
+# summarize all questions with in each conversation and also the answers.
+
+# collect data from websites using webscraping

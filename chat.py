@@ -11,11 +11,45 @@ from langchain_openai import ChatOpenAI, OpenAI
 from langchain_openai import OpenAIEmbeddings
 
 
+
+def load_pdfs(path, chunksize=1000, overlap=100):
+    """Recursively loads all the pdfs in a given directory path 
+    and return a list containing pages of all documents. 
+
+    Args:
+        chunksize (int, optional): Defaults to 1000.
+        overlap (int, optional): Defaults to 100.
+
+    Returns:
+        type: List of Langchain Docment Class
+    """    
+
+    from langchain_community.document_loaders import DirectoryLoader
+    from langchain_community.document_loaders import PyPDFLoader
+
+
+    # load all pdfs in the directory
+    loader = DirectoryLoader(
+        path, 
+        use_multithreading=True,
+        loader_cls=PyPDFLoader,
+        show_progress=True,
+        recursive=True
+    )
+
+    # returns a list of pages as Document types
+    pdf_docs = loader.load() 
+    return pdf_docs
+
+
+
 load_dotenv('.env')
 
 # load the document as before
-loader = PyPDFLoader('Satya_Resume_Data.pdf')
-documents = loader.load()
+documents = load_pdfs(r"data/pdfs")
+print("total pages found: ", len(documents))
+# print(documents[0])
+
 
 # we split the data into chunks
 text_splitter = RecursiveCharacterTextSplitter(
@@ -46,5 +80,5 @@ qa_chain = RetrievalQA.from_chain_type(
 )
 
 # we can now exectute queries againse our Q&A chain
-result = qa_chain.invoke({'query': 'Who is the CV about?'})
+result = qa_chain.invoke({'query': 'What is MS BAIS program and Explain its circulum'})
 print(result['result'])
