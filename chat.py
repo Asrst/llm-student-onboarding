@@ -80,5 +80,8 @@ qa_chain = RetrievalQA.from_chain_type(
 )
 
 # we can now exectute queries againse our Q&A chain
-result = qa_chain.invoke({'query': 'What is MS BAIS program and Explain its circulum'})
+# question = "What is MS BAIS program and Explain its circulum"
+
+question = input("What do u want to know about MS BAIS or AIBA program?")
+result = qa_chain.invoke({'query': f'{question}'})
 print(result['result'])
