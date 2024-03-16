@@ -1,5 +1,6 @@
 # folder/files to exclude
 data/
+storage/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
