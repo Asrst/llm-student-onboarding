@@ -136,35 +136,6 @@ answer = {
 # And now we put it all together!
 rag_chain = loaded_memory | standalone_question | retrieved_documents | answer
 
-
-# rag_chain = (
-#     {"context": retriever, "question": RunnablePassthrough()}
-#     | prompt
-#     | llm
-#     | StrOutputParser()
-# )
-
-
-
-# qa_chain = RetrievalQA.from_chain_type(
-#     llm=OpenAI(),
-#     retriever=,
-#     return_source_documents=True
-# )
-
-# we can now exectute queries againse our Q&A chain
-# question = "What is MS BAIS program and Explain its circulum. Why there is a recent change in name of the program?"
-# question = input("What do u want to know about MS BAIS or AIBA program?")
-
-# result = qa_chain.stream({'query': f'{question}'})
-# print(type(result))
-# for chunk in result:
-#     print(chunk)
-
-# print("\n")
-# print(qa_chain.run(question))
-
-
 while True:
     question_input = input("\nUser: ")
     if question_input == "exit":
