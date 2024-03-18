@@ -20,7 +20,7 @@ from langchain_core.runnables import RunnableParallel
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.prompts.prompt import PromptTemplate
 
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationSummaryBufferMemory
 from langchain.chains import RetrievalQA
 
 from data_loaders import load_pdfs, load_docx_files, load_text_files
@@ -63,9 +63,11 @@ retriever = vectordb.as_retriever(search_kwargs={'k': 5})
 # streaming=True, callbacks=[StreamingStdOutCallbackHandler()]
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
-memory = ConversationBufferMemory(
-    return_messages=True, output_key="answer", input_key="question"
-)
+memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=2000,
+                                                  return_messages=True, 
+                                                  output_key="answer", 
+                                                  input_key="question")
+
 
 
 _template = """Given the following conversation and a follow up question, rephrase the 
@@ -79,10 +81,10 @@ CONDENSE_QUESTION_PROMPT = PromptTemplate.from_template(_template)
 
 
 _template = """You are an chat assistant for supporting usf students with their queries. 
-Use the context provided to better answer the question in the English. If the question cannot be the answered from 
-the context provided, just say that you don't know. 
-Question: {question} 
+If applicable use the context provided to better answer the question in the English. 
+If the question cannot be the answered from the context provided, just say that you don't know. 
 Context: {context} 
+Question: {question} 
 Answer:
 """
 ANSWER_PROMPT  = ChatPromptTemplate.from_template(_template)
