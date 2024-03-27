@@ -20,17 +20,10 @@ from langchain_core.runnables import RunnableParallel
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.prompts.prompt import PromptTemplate
 
-from langchain.output_parsers import PydanticToolsParser
-from langchain.retrievers.multi_query import MultiQueryRetriever
-
 from langchain.memory import ConversationSummaryBufferMemory
 from langchain.chains import RetrievalQA
 
 from data_loaders import load_pdfs, load_docx_files, load_text_files
-import logging 
-
-logging.basicConfig()
-logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
 
 
 load_dotenv('.env')
@@ -60,9 +53,8 @@ vectordb = Chroma.from_documents(
     embedding=embedding,
     persist_directory='./data/chromadb'
 )
-# save the vector data
-vectordb.persist()
 
+vectordb.persist()
 # create retriver based on vectordb
 retriever = vectordb.as_retriever(search_kwargs={'k': 5})
 
@@ -70,7 +62,6 @@ retriever = vectordb.as_retriever(search_kwargs={'k': 5})
 # streaming=True, callbacks=[StreamingStdOutCallbackHandler()]
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
-# initialize memory
 memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=2000,
                                                   return_messages=True, 
                                                   output_key="answer", 
@@ -79,24 +70,16 @@ memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=2000,
 
 
 system = """You are an expert at assisting students regarding University of South Florida's Masters in Business Analytics and 
-Information System program. Answer the user question as best you can, addressing the user's concerns.\
+Information System program. Answer the user question as best you can, addressing the user's concerns.
+"""
 
-Perform query expansion. If there are multiple common ways of phrasing a user question \
-or common synonyms for key words in the question, make sure to return multiple versions \
-of the query with the different phrasings.
-
-If there are acronyms or words you are not familiar with, do not try to rephrase them.
-
-Return at least 3 versions of the question."""
-
-QUERY_AUG_PROMPT = ChatPromptTemplate.from_messages(
+HYDE_PROMPT = ChatPromptTemplate.from_messages(
     [
         ("system", system),
         ("human", "{question}"),
     ]
 )
 
-# answer prompt
 
 _template = """You are an chat assistant for supporting usf students with their queries. 
 If applicable use the context provided to better answer the question in the English. 
@@ -122,15 +105,22 @@ loaded_memory = RunnablePassthrough.assign(
     chat_history=RunnableLambda(memory.load_memory_variables) | itemgetter("history"),
 )
 
-
-multi_retriever = MultiQueryRetriever.from_llm(retriever=retriever, 
-                                               llm=llm)
-
+# Now we get a hypothethical document embedding
+hyde_doc = {
+    "hyde_document": {
+        "question": lambda x: x["question"],
+        "chat_history": lambda x: get_buffer_string(x["chat_history"]),
+    }
+    | HYDE_PROMPT
+    | llm
+    | StrOutputParser(),
+}
 
 # Now we retrieve the documents
-multi_retrieval_docs = {"question": RunnablePassthrough(), 
-                       "docs": multi_retriever}
-
+retrieved_documents = {
+    "docs": itemgetter("hyde_document") | retriever,
+    "question": lambda x: x["hyde_document"],
+}
 
 # Now we construct the inputs for the final prompt
 final_inputs = {
@@ -144,8 +134,9 @@ answer = {
     "docs": itemgetter("docs"),
 }
 
+
 # And now we put it all together!
-rag_chain = loaded_memory | multi_retrieval_docs | answer
+rag_chain = loaded_memory | hyde_doc | retrieved_documents | answer
 
 while True:
     question_input = input("\nUser: ")

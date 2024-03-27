@@ -2,6 +2,7 @@ import os, sys
 import json
 import pandas as pd
 
+
 def load_pdfs(path, chunksize=1000, overlap=100):
     """Recursively loads all the pdfs in a given directory path 
     and return a list containing pages of all documents. 
