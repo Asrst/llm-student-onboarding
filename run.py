@@ -9,7 +9,16 @@ from rags import base_rag, rag_with_hyde, rag_with_query_aug
 
 
 if __name__ == "__main__":
-    rag_type = "base"
+
+    from simple_term_menu import TerminalMenu
+    
+    options = ["base", "query_aug", "hyde"]
+    terminal_menu = TerminalMenu(options)
+    idx = terminal_menu.show()
+    print(f"Building {options[idx]} RAG...")
+
+    # get the rag type
+    rag_type = options[idx]
 
     # intialize the LLM
     llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
@@ -27,7 +36,7 @@ if __name__ == "__main__":
     if rag_type == "base":
         rag_chain = base_rag(memory, retriever)
 
-    if rag_type == "data_aug":
+    if rag_type == "query_aug":
         rag_chain = rag_with_query_aug(memory, retriever)
 
     if rag_type == "hyde":
