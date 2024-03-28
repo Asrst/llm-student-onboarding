@@ -1,4 +1,5 @@
 import os, sys
+import ast, json
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_openai import ChatOpenAI, OpenAI, OpenAIEmbeddings
@@ -43,7 +44,15 @@ def load_and_embed(docs_path):
     return retriever
 
 
-def load_data():
-
-
-    return
+def str_to_json(s):
+    try:
+        # First, attempt to parse the string as JSON
+        return json.loads(s)
+    except json.JSONDecodeError:
+        # If it fails, assume the string might be a Python literal
+        try:
+            return ast.literal_eval(s)
+        except (ValueError, SyntaxError):
+            # Handle the case where parsing fails for both methods
+            print("Error: Input string is neither valid JSON nor a valid Python literal.")
+            return None

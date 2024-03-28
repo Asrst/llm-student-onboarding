@@ -34,8 +34,7 @@ if __name__ == "__main__":
         rag_chain = rag_with_hyde(memory, retriever)
 
     # if rag_type == "react":
-    #     rag_with_react()
-        
+    #     rag_with_react()        
 
     while True:
         question_input = input("\nUser: ")

@@ -38,6 +38,8 @@ load_dotenv('.env')
 # intialize the LLM
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
+
+
 def base_rag(memory, retriever):
 
     # First we add a step to load memory
@@ -159,11 +161,3 @@ def rag_with_query_aug(memory, retriever):
 
     # return the chain
     return rag_chain
-
-
-def rag_with_react():
-
-
-
-
-    return
