@@ -22,7 +22,8 @@ from langchain.output_parsers import PydanticToolsParser
 from langchain.retrievers.multi_query import MultiQueryRetriever
 
 from langchain.memory import ConversationSummaryBufferMemory
-from langchain.chains import RetrievalQA
+from langchain_community.tools import DuckDuckGoSearchResults
+
 
 from prompts import ANSWER_PROMPT, QUERY_AUG_PROMPT, HYDE_PROMPT, CONDENSE_QUESTION_PROMPT
 from prompts import _combine_documents
@@ -83,7 +84,6 @@ def base_rag(memory, retriever):
 
 
 def rag_with_hyde(memory, retriever):
-
 
     # First we add a step to load memory
     # This adds a "memory" key to the input object
@@ -161,9 +161,64 @@ def rag_with_query_aug(memory, retriever):
     return rag_chain
 
 
-def rag_with_react():
+def rag_with_react(memory, retriever):
+
+    # First we add a step to load memory
+    # This adds a "memory" key to the input object
+    loaded_memory = RunnablePassthrough.assign(
+        chat_history=RunnableLambda(memory.load_memory_variables) | itemgetter("history"),
+    )
+
+    # Now we calculate the standalone question
+    standalone_question = {
+        "standalone_question": {
+            "question": lambda x: x["question"],
+            "chat_history": lambda x: get_buffer_string(x["chat_history"]),
+        }
+        | CONDENSE_QUESTION_PROMPT
+        | llm
+        | StrOutputParser(),
+    }
+
+    # Now we retrieve the documents
+    retrieved_documents = {
+        "docs": itemgetter("standalone_question") | retriever,
+        "question": lambda x: x["standalone_question"],
+    }
 
 
+    reasoning_inputs = {
+        "full_context": lambda x: _combine_documents(x["docs"]),
+        "question": itemgetter("question"),
+    }
 
+    # context reasoning
+    _template = """Given the following context and a follow up question. Return a filtered context 
+    that can help to detailedly answer the given question.
 
-    return
+    Context:
+    {full_context}
+    Follow Up Input: {question}
+    Improved Context:"""
+
+    REASON_CONTEXT_PROMPT = PromptTemplate.from_template(_template)
+
+    # Now we reason to minimize the relevant contexts to the question
+    final_inputs = { "context": reasoning_inputs
+        | REASON_CONTEXT_PROMPT
+        | llm
+        | StrOutputParser(),
+
+        "question": itemgetter("question") 
+    }
+
+    # And finally, we do the part that returns the answers
+    answer = {
+        "answer": final_inputs | ANSWER_PROMPT | llm,
+        "docs": itemgetter("docs"),
+    }
+
+    # And now we put it all together!
+    rag_chain = loaded_memory | standalone_question | retrieved_documents | answer
+
+    return rag_chain

@@ -5,14 +5,14 @@ from langchain_openai import ChatOpenAI, OpenAI
 from langchain.memory import ConversationSummaryBufferMemory
 
 from utils import load_and_embed
-from rags import base_rag, rag_with_hyde, rag_with_query_aug
+from rags import base_rag, rag_with_hyde, rag_with_query_aug, rag_with_react
 
 
 if __name__ == "__main__":
 
     from simple_term_menu import TerminalMenu
     
-    options = ["base", "query_aug", "hyde"]
+    options = ["base", "query_aug", "hyde", "ReAct"]
     terminal_menu = TerminalMenu(options)
     idx = terminal_menu.show()
     print(f"Building {options[idx]} RAG...")
@@ -42,8 +42,8 @@ if __name__ == "__main__":
     if rag_type == "hyde":
         rag_chain = rag_with_hyde(memory, retriever)
 
-    # if rag_type == "react":
-    #     rag_with_react()
+    if rag_type.lower() == "react":
+        rag_chain = rag_with_react(memory, retriever)
         
 
     while True:
@@ -52,6 +52,7 @@ if __name__ == "__main__":
             break
         inputs = {"question": question_input}
         result = rag_chain.invoke(inputs)
+        print(result)
         answer = result["answer"].content
         print(f"Agent: {answer}")
         memory.save_context(inputs, {"answer": answer})
