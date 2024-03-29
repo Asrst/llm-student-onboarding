@@ -29,7 +29,7 @@ from prompts import ANSWER_PROMPT, QUERY_AUG_PROMPT, HYDE_PROMPT, CONDENSE_QUEST
 from prompts import _combine_documents
 
 logging.basicConfig()
-logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
+# logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
 
 load_dotenv('.env')
 
