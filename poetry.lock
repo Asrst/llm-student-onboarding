@@ -3524,13 +3524,13 @@ ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"
 
 [[package]]
 name = "reflex"
-version = "0.4.4"
+version = "0.4.5"
 description = "Web apps in pure Python."
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = "<4.0,>=3.8"
 files = [
-    {file = "reflex-0.4.4-py3-none-any.whl", hash = "sha256:e737dfbff32e845cec17fcb2a3de779955c6146db236e9dfba149494b8aeb6fc"},
-    {file = "reflex-0.4.4.tar.gz", hash = "sha256:805fceadfea315c4b7f0f197cd340f83ee1e76c40415f0479c77fcf7109b8c8b"},
+    {file = "reflex-0.4.5-py3-none-any.whl", hash = "sha256:651b32f6a2b476ed0732ba3656967a262795a87d4029ac4977c4a76987dc4081"},
+    {file = "reflex-0.4.5.tar.gz", hash = "sha256:906397d6e7ddfd9ee7438268a31944ecda5b9e234c7efbc7e8af9348503b4a25"},
 ]
 
 [package.dependencies]
