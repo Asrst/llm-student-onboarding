@@ -1,6 +1,8 @@
 # folder/files to exclude
 data/
 storage/
+archive/
+webui/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

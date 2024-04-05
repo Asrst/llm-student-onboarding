@@ -2,7 +2,7 @@ import os, sys
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_openai import ChatOpenAI, OpenAI, OpenAIEmbeddings
-from data_loaders import load_pdfs, load_docx_files, load_text_files
+from data_loaders import load_pdfs, load_docx_files, load_text_files, load_json_file
 import logging 
 
 
@@ -12,7 +12,11 @@ def load_and_embed(docs_path):
     documents = []
     word_docs = load_docx_files(f"{docs_path}/docx")
     pdfs = load_pdfs(f"{docs_path}/pdfs")
-    documents = pdfs + word_docs
+    json_docs = load_json_file(f"{docs_path}/json/jira-conversations-faqs.json",
+                               jq_schema='.[].faq[]',
+                               text_content=False)
+
+    documents = pdfs + word_docs + json_docs
     print("total pages found: ", len(documents))
     # print(documents[0])
 
@@ -41,9 +45,3 @@ def load_and_embed(docs_path):
 
     # return the retriever
     return retriever
-
-
-def load_data():
-
-
-    return

@@ -3,7 +3,7 @@ import json
 import pandas as pd
 
 
-def load_pdfs(path, chunksize=1000, overlap=100):
+def load_pdfs(path):
     """Recursively loads all the pdfs in a given directory path 
     and return a list containing pages of all documents. 
 
@@ -33,7 +33,7 @@ def load_pdfs(path, chunksize=1000, overlap=100):
     return pdf_docs
 
 
-def load_text_files(path, chunksize=1000, overlap=100):
+def load_text_files(path):
     """ 
     Load all text files from a given directory
 
@@ -62,7 +62,7 @@ def load_text_files(path, chunksize=1000, overlap=100):
 
 
 
-def load_docx_files(path, chunksize=1000, overlap=100):
+def load_docx_files(path):
     """Recursively loads all the pdfs in a given directory path 
     and return a list containing pages of all documents. 
 
@@ -92,7 +92,7 @@ def load_docx_files(path, chunksize=1000, overlap=100):
     return word_docs
 
 
-def load_json_files(path, chunksize=1000, overlap=100):
+def load_json_file(path, **kwargs):
     """Recursively loads all the pdfs in a given directory path 
     and return a list containing pages of all documents. 
 
@@ -109,25 +109,14 @@ def load_json_files(path, chunksize=1000, overlap=100):
 
 
     # load all pdfs in the directory
-    loader = JSONLoader(path)
-
-    with open(fp) as f:
-        # list of dict objects
-        data = json.load(f)
-
-    # d = json_data_loader("jira-conversations2.json")
-    # summarize all questions with in each conversation and also the answers.
-    # collect data from websites using webscraping
-
-    print("loaded ", len(data), "conversations.")
-
+    loader = JSONLoader(path, **kwargs)
 
     # returns a list of pages as Document types
     json_docs = loader.load() 
     return json_docs
 
 
-def load_html_files(path, chunksize=1000, overlap=100):
+def load_html_files(path):
     """Recursively loads all the pdfs in a given directory path 
     and return a list containing pages of all documents. 
 
