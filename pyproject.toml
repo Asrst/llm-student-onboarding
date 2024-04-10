@@ -19,6 +19,8 @@ unstructured = {extras = ["docx"], version = "^0.12.6"}
 simple-term-menu = "^1.6.4"
 ragas = "^0.1.5"
 jq = "^1.7.0"
+reflex = "0.4.7"
+pydantic-core = "2.16.3"
 
 
 [build-system]
