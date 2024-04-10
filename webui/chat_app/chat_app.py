@@ -93,8 +93,8 @@ def navbar():
     return rx.box(
         rx.hstack(
             rx.hstack(
-                rx.avatar(fallback="RC", variant="solid"),
-                rx.heading("Reflex Chat"),
+                rx.avatar(fallback="BB", variant="solid"),
+                rx.heading("Bull Buddy"),
                 align_items="center",
             ),
             justify_content="space-between",

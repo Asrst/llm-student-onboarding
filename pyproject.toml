@@ -16,9 +16,12 @@ chromadb = "^0.4.24"
 pypdf = "^4.1.0"
 llama-index = "^0.10.20"
 unstructured = {extras = ["docx"], version = "^0.12.6"}
-reflex = "^0.4.4"
+reflex = "^0.4.7"
+docutils = "0.21"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+package-mode = false

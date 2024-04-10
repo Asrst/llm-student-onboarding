@@ -3,7 +3,7 @@ import os, sys
 import openai
 from dotenv import load_dotenv
 
-load_dotenv('../.env')
+# load_dotenv('../.env')
 openai.api_key = os.environ["OPENAI_API_KEY"]
 client = openai.OpenAI()
 
@@ -19,14 +19,25 @@ class State(rx.State):
         # Our chatbot has some brains now!
 
         session = {}
+        system_msg = [
+                    {"role": "system", 
+                     "content": ("You are a friendly chatbot named Bull Buddy."
+                                 "You are here to help USF students with their admissions and onboarding.") }
+                                 
+                ]
+        
+        # Check if the question is empty
+        if self.question == "":
+            return
+
+
         if len(self.question):
+            msg = [{"role": "user", "content": self.question}]
             session = client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "user", "content": self.question}
-                ],
+                messages=system_msg + msg,
                 stop=None,
-                temperature=0.7,
+                temperature=0.9,
                 stream=True,
             )
         
