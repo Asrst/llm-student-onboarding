@@ -25,8 +25,8 @@ from langchain.memory import ConversationSummaryBufferMemory
 from langchain_community.tools import DuckDuckGoSearchResults
 
 
-from prompts import ANSWER_PROMPT, QUERY_AUG_PROMPT, HYDE_PROMPT, CONDENSE_QUESTION_PROMPT
-from prompts import _combine_documents
+from .prompts import ANSWER_PROMPT, QUERY_AUG_PROMPT, HYDE_PROMPT, CONDENSE_QUESTION_PROMPT
+from .prompts import _combine_documents
 
 logging.basicConfig()
 # logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
