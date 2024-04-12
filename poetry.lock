@@ -4633,13 +4633,13 @@ cffi = {version = "*", markers = "implementation_name == \"pypy\""}
 
 [[package]]
 name = "ragas"
-version = "0.1.5"
+version = "0.1.7"
 description = ""
 optional = false
 python-versions = "*"
 files = [
-    {file = "ragas-0.1.5-py3-none-any.whl", hash = "sha256:00d02a056075ef81a4b20d7d3392bce16c670ec87583030cb6ef561e1505efa3"},
-    {file = "ragas-0.1.5.tar.gz", hash = "sha256:0647d8af7e01ad1bf8062aa1d80cc74fef2f98facccfd462d40fd32bbbaad82a"},
+    {file = "ragas-0.1.7-py3-none-any.whl", hash = "sha256:abe02b40a8d11842c42e222226901287858beb70203f1227a403a9261d0bb684"},
+    {file = "ragas-0.1.7.tar.gz", hash = "sha256:db857262dda63fc01a7eef837cbba166202084b5d535b2e8ad408c63a66f9319"},
 ]
 
 [package.dependencies]
@@ -6681,4 +6681,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "4bc36a6013fef525e27f432e7e0f041ea7ef4c70358a966e0215ce1b6921ab87"
+content-hash = "0fb02e35b21e9a2eb950e57ee2608a008284a3821c8d2e37b7615509b605fd57"

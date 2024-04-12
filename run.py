@@ -12,6 +12,7 @@ if __name__ == "__main__":
 
     from simple_term_menu import TerminalMenu
     
+    # list all rag types
     options = ["base", "query_aug", "hyde", "ReAct"]
     terminal_menu = TerminalMenu(options)
     idx = terminal_menu.show()
@@ -44,17 +45,46 @@ if __name__ == "__main__":
 
     if rag_type.lower() == "react":
         rag_chain = rag_with_react(memory, retriever)
-        
+    
 
+    # while True:
+    #     question_input = input("\nUser: ")
+    #     if question_input == "exit":
+    #         break
+    #     inputs = {"question": question_input}
+    #     result = rag_chain.invoke(inputs)
+    #     # print(result.keys())
+    #     answer = result["answer"].content
+    #     print(f"Agent: {answer}")
+    #     memory.save_context(inputs, {"answer": answer})
+    #     print("\n")
+    #     print(memory.load_memory_variables({}))
+    #     print(result["docs"])
+
+
+    #     rag_chain_with_source = RunnableParallel(
+    #     {"context": retriever, "question": RunnablePassthrough()}
+    # ).assign(answer=rag_chain_from_docs)
+
+    
     while True:
-        question_input = input("\nUser: ")
+        question_input = input("\n\nUser: ")
         if question_input == "exit":
             break
+
         inputs = {"question": question_input}
-        result = rag_chain.invoke(inputs)
-        print(result)
-        answer = result["answer"].content
-        print(f"Agent: {answer}")
-        memory.save_context(inputs, {"answer": answer})
-        # print("\n")
-        # print(memory.load_memory_variables({}))
+        output = {}
+        curr_key = None
+        print("\nanswer:")
+        for chunk in rag_chain.stream(inputs):
+            # print(chunk)
+            for key in chunk:
+                if key not in output:
+                    output[key] = chunk[key]
+                else:
+                    output[key] += chunk[key]
+                if key == "answer":
+                    print(f"{chunk[key].content}", end="", flush=True)
+                # else:
+                #     print(chunk[key], end="", flush=True)
+                # curr_key = key

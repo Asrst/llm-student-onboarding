@@ -21,6 +21,7 @@ ragas = "^0.1.5"
 jq = "^1.7.0"
 reflex = "0.4.7"
 pydantic-core = "2.16.3"
+datasets = "^2.18.0"
 
 
 [build-system]
