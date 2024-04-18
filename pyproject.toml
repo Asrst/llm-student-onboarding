@@ -21,6 +21,8 @@ ragas = "^0.1.5"
 jq = "^1.7.0"
 reflex = "^0.4.7"
 docutils = "0.21"
+pinecone-client = "^3.2.2"
+langchain-pinecone = "^0.1.0"
 
 
 [build-system]

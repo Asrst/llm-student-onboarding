@@ -19,7 +19,7 @@ client = openai.OpenAI()
 # load data and embed
 # webui dir
 dir_path = os.getcwd() # f"{os.path.abspath(__file__)}"
-retriever = load_and_embed(f"{dir_path}/assets/data")
+retriever = load_and_embed(f"{dir_path}/data")
 # intialize the LLM
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 # Intialize memory
@@ -74,6 +74,9 @@ class State(rx.State):
         # Add to the answer as the chatbot responds.
         answer = ""
         self.chat_history.append((self.question, answer))
+        # save the memory for rag
+        memory.save_context(inputs, {"answer": answer})
+
 
         # Clear the question input.
         self.question = ""
