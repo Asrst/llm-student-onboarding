@@ -1,12 +1,8 @@
-"""Welcome to Reflex! This file outlines the steps to create a basic app."""
-
 from rxconfig import config
 import reflex as rx
-
-filename = f"{config.app_name}/{config.app_name}.py"
-
 from chat_app import style
 from chat_app.state import State
+filename = f"{config.app_name}/{config.app_name}.py"
 
 
 def qa(question: str, answer: str) -> rx.Component:
@@ -23,6 +19,7 @@ def qa(question: str, answer: str) -> rx.Component:
     )
 
 
+
 # def chat() -> rx.Component:
 #     return rx.box(
 #         rx.foreach(
@@ -37,9 +34,9 @@ def chat() -> rx.Component:
     """List all the messages in a single conversation."""
 
     chatbox = rx.box(
-        rx.foreach(State.chat_history,lambda messages: qa(messages[0], messages[1]),),
-        width="100%"
-    )
+        rx.foreach(State.chat_history,
+                   lambda messages: qa(messages[0], messages[1]),),
+                   width="100%")
 
     return rx.vstack(
         chatbox,
@@ -66,7 +63,7 @@ def action_bar() -> rx.Component:
                     style=style.input_style,
                 ),
                 rx.button(
-                    "Ask",
+                    "Send",
                     on_click=State.answer,
                     color_scheme="teal",
                 ),
@@ -120,7 +117,6 @@ def navbar():
 
 
 
-
 def index() -> rx.Component:
     """The main app."""
     return rx.chakra.vstack(
@@ -135,12 +131,11 @@ def index() -> rx.Component:
     )
 
 
-
-
 app = rx.App(
     theme=rx.theme(
         appearance="dark",
         accent_color="teal",
     ),
 )
+
 app.add_page(index)

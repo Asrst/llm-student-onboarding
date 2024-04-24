@@ -8,7 +8,7 @@ from operator import itemgetter
 from langchain_openai import ChatOpenAI, OpenAI
 from langchain.memory import ConversationSummaryBufferMemory
 
-from .rags import base_rag
+from .rags import base_rag, rag_with_hyde, rag_with_query_aug, rag_with_react
 from .utils import load_and_embed
 print()
 
@@ -21,14 +21,14 @@ client = openai.OpenAI()
 dir_path = os.getcwd() # f"{os.path.abspath(__file__)}"
 retriever = load_and_embed(f"{dir_path}/data")
 # intialize the LLM
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.1)
 # Intialize memory
 memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=2000,
                                                 return_messages=True, 
                                                 output_key="answer", 
                                                 input_key="question")
 # get the rag_chain
-rag_chain = base_rag(memory, retriever)
+rag_chain = rag_with_query_aug(memory, retriever)
 
 
 class State(rx.State):
@@ -56,7 +56,6 @@ class State(rx.State):
         if self.question == "":
             return
 
-
         if len(self.question):
             msg = [{"role": "user", "content": self.question}]
             # session = client.chat.completions.create(
@@ -69,14 +68,12 @@ class State(rx.State):
 
             inputs = {"question": self.question}
             session =  rag_chain.stream(inputs)
-        
 
         # Add to the answer as the chatbot responds.
         answer = ""
         self.chat_history.append((self.question, answer))
         # save the memory for rag
         memory.save_context(inputs, {"answer": answer})
-
 
         # Clear the question input.
         self.question = ""
