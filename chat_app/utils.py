@@ -7,7 +7,7 @@ import logging, time
 from pinecone import Pinecone, ServerlessSpec
 from langchain_pinecone import PineconeVectorStore
 
-PINECONE_API_KEY="56d7ec45-b638-411b-bda5-bec35a1ae85a"
+PINECONE_API_KEY = os.environ["PINECONE_API_KEY"]
 PINECONE_INDEX_NAME="bull-buddy-index"
 
 

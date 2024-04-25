@@ -12,8 +12,9 @@ from .rags import base_rag, rag_with_hyde, rag_with_query_aug, rag_with_react
 from .utils import load_and_embed
 print()
 
-# load_dotenv('../.env')
+load_dotenv('.env')
 openai.api_key = os.environ["OPENAI_API_KEY"]
+# print(openai.api_key)
 client = openai.OpenAI()
 
 # load data and embed
