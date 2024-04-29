@@ -22,7 +22,16 @@ answer_style = message_style | dict(
 
 # Styles for the action bar.
 input_style = dict(
-    border_width="1px", padding="1em", box_shadow=shadow
+    border_width="1px", padding="1em", box_shadow=shadow, 
+    align_items="stretch",
+    width="250px"
 )
 
-# button_style = dict(bg="#CEFFEE", box_shadow=shadow)
+button_style = dict(bg="#CEFFEE", box_shadow=shadow)
+
+# openai_input_style = {
+#     "color": "white",
+#     "margin-top": "2rem",
+#     "margin-bottom": "1rem",
+# }
+

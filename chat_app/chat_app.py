@@ -57,7 +57,7 @@ def action_bar() -> rx.Component:
             rx.hstack(
                  rx.input(
                     value=State.question,
-                    placeholder="Ask a question",
+                    placeholder="Ask a question about USF",
                     on_change=State.set_question,
                     # size=1,
                     style=style.input_style,
@@ -67,11 +67,16 @@ def action_bar() -> rx.Component:
                     on_click=State.answer,
                     color_scheme="teal",
                 ),
-
-        # align_items="stretch",
-        # width="100%",
+                rx.badge(State.rag_type,
+                         rx.tooltip(rx.icon("info", size=14), 
+                        content="The current selected rag type."),
+                        variant="soft"),
+            
+            align_items="stretch",
+            # width="100%",
                 
                 ),
+
         position="sticky",
         bottom="0",
         left="0",
@@ -87,16 +92,54 @@ def action_bar() -> rx.Component:
 
 
 def navbar():
-    return rx.box(
-        rx.hstack(
-            rx.hstack(
+
+    dropdown_menu = rx.hstack(
+        rx.badge(State.rag_type,
+                 rx.tooltip(rx.icon("info", size=14), 
+                content="The current selected rag type."),
+                 variant="soft"),
+        rx.select(State.rag_values,
+            value=State.current_rag_val,
+            on_change=State.set_current_rag_val
+        ),
+        rx.button(
+            "Set",
+            type="submit",
+            on_click=State.change_rag_type,
+        ),
+            # justify_content="space-between",
+        align_items="stretch",
+
+    )
+
+    openai_key_input = rx.input(
+            value=State.openai_api_key,
+            placeholder="Enter your openai key",
+            on_change=State.set_openai_api_key,
+            style=style.input_style,
+            type="password",
+    )
+
+    settings_box = rx.vstack(
+        openai_key_input,
+        dropdown_menu,
+    )
+
+
+    logo_box = rx.hstack(
                 rx.avatar(fallback="BB", variant="solid"),
                 rx.heading("Bull Buddy"),
                 align_items="center",
-            ),
+            )
+
+
+    return rx.box(
+        rx.hstack(logo_box,
+            settings_box,
             justify_content="space-between",
             align_items="center",
         ),
+
         backdrop_filter="auto",
         backdrop_blur="lg",
         padding="12px",
@@ -106,14 +149,8 @@ def navbar():
         top="0",
         z_index="100",
         align_items="center",
+
     )
-
-
-# def index() -> rx.Component:
-#     return rx.center(rx.container(
-#         chat(),
-#         action_bar(),
-#     ))
 
 
 

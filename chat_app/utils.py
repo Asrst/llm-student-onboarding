@@ -10,26 +10,32 @@ from langchain_pinecone import PineconeVectorStore
 PINECONE_API_KEY = os.environ["PINECONE_API_KEY"]
 PINECONE_INDEX_NAME="bull-buddy-index"
 
+# declare and configure pincone client  
+pc = Pinecone(api_key=PINECONE_API_KEY)
+spec = ServerlessSpec(cloud='aws', region='us-east-1')  
 
-def load_and_embed(docs_path):
-
-    # we create our vectorDB inside the ./data directory
-    embedding = OpenAIEmbeddings()
-    index_name = "bull-buddy-index"
-
-    # configure client  
-    pc = Pinecone(api_key=PINECONE_API_KEY)  
-    spec = ServerlessSpec(cloud='aws', region='us-east-1')  
+def get_pinecone_db(embedding):
     
     # check for and delete index if already exists  
-    if index_name in pc.list_indexes().names():
+    if PINECONE_INDEX_NAME in pc.list_indexes().names():
         print("loading existing pincone index....")
         while not pc.describe_index(PINECONE_INDEX_NAME).status['ready']:
             print("Waiting...Index Not Ready...")
-            time.sleep(1)
+            time.sleep(1)    
         # initialize the vector-db
-        vectordb = PineconeVectorStore(index_name=index_name, embedding=embedding)    
+        vectordb = PineconeVectorStore(index_name=PINECONE_INDEX_NAME, embedding=embedding)
+        return vectordb
     else:
+        raise Exception("Index Not Found...")
+
+
+def load_and_embed(docs_path, embed_model):
+
+    # we create our vectorDB inside the ./data directory
+
+    try:
+        retriever = get_pinecone_db(embed_model)
+    except Exception as e:
         # load the documents
         documents = []
         word_docs = load_docx_files(f"{docs_path}/docx")
@@ -53,7 +59,7 @@ def load_and_embed(docs_path):
 
         # create a new index  
         pc.create_index(  
-            index_name,  
+            PINECONE_INDEX_NAME,  
             dimension=1536,  # dimensionality of text-embedding-ada-002  
             metric='dotproduct',  
             spec=spec  
@@ -65,19 +71,15 @@ def load_and_embed(docs_path):
             time.sleep(1)
 
         # vector store
-        vectordb = PineconeVectorStore.from_documents(splits, embedding, 
-                                                      index_name=index_name)
+        vectordb = PineconeVectorStore.from_documents(splits, embed_model, 
+                                                      index_name=PINECONE_INDEX_NAME)
 
     # print index info
-    index = pc.Index(index_name) 
+    index = pc.Index(PINECONE_INDEX_NAME) 
     print(index.describe_index_stats())
 
-    # create retriver based on vectordb
-    # search_type="mmr"
-    retriever = vectordb.as_retriever(search_kwargs={'k': 5})
-
     # return the retriever
-    return retriever
+    return vectordb
 
 
 # def load_and_embed(docs_path):

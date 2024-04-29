@@ -31,15 +31,15 @@ from .prompts import _combine_documents
 logging.basicConfig()
 # logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
 
-load_dotenv('.env')
+# load_dotenv('.env')
 
 # Create a retrieval chain
 # streaming=True, callbacks=[StreamingStdOutCallbackHandler()]
 
 # intialize the LLM
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+# llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
-def base_rag(memory, retriever):
+def base_rag(llm, memory, retriever):
 
     # First we add a step to load memory
     # This adds a "memory" key to the input object
@@ -83,7 +83,7 @@ def base_rag(memory, retriever):
     return rag_chain
 
 
-def rag_with_hyde(memory, retriever):
+def rag_with_hyde(llm, memory, retriever):
 
     # First we add a step to load memory
     # This adds a "memory" key to the input object
@@ -127,7 +127,7 @@ def rag_with_hyde(memory, retriever):
     return rag_chain
 
 
-def rag_with_query_aug(memory, retriever):
+def rag_with_query_aug(llm, memory, retriever):
     
     # First we add a step to load memory
     # This adds a "memory" key to the input object
@@ -161,7 +161,7 @@ def rag_with_query_aug(memory, retriever):
     return rag_chain
 
 
-def rag_with_react(memory, retriever):
+def rag_with_react(llm, memory, retriever):
 
     # First we add a step to load memory
     # This adds a "memory" key to the input object
