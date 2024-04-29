@@ -1,10 +1,14 @@
 # llm-student-onboarding
 
-1. Setup the Env using poetry and create ".env" file with OpenAI API key.
-2. `Python3 run.py` and choose the rag type from the options
-3. Chat with the bot (from the commandline)
-4. Web UI is based on python reflex framework.
-5. `cd webui` and then `reflex run`
+- A version of this app is deployed at https://bullbuddy.reflex.run/
+
+
+#### Steps to run the app locally
+
+1. Make sure you have poetry and run `poetry install` to setup the env.
+2. run the command `reflex run` (Web UI is based on python reflex framework.)
+
+
 
 
 
